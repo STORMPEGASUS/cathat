@@ -1,3 +1,7 @@
+import 'dart:io';
+
+import 'package:cat_app/api/Apis.dart';
+import 'package:cat_app/helper/dailogs.dart';
 import 'package:cat_app/screens/home_Screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -15,28 +19,42 @@ class LoginScreeen extends StatefulWidget {
 
 // login screen
 class _LoginScreeenState extends State<LoginScreeen> {
-  Future<UserCredential> signInWithGoogle() async {
-    // Trigger the authentication flow
-    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+  Future<UserCredential?> signInWithGoogle() async {
+    try {
+      //using try catch for internet issue detection
+      await InternetAddress.lookup('google.com');
+      // Trigger the authentication flow
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
-    // Obtain the auth details from the request
-    final GoogleSignInAuthentication? googleAuth =
-        await googleUser?.authentication;
+      // Obtain the auth details from the request
+      final GoogleSignInAuthentication? googleAuth =
+          await googleUser?.authentication;
 
-    // Create a new credential
-    final credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth?.accessToken,
-      idToken: googleAuth?.idToken,
-    );
+      // Create a new credential
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth?.accessToken,
+        idToken: googleAuth?.idToken,
+      );
 
-    // Once signed in, return the UserCredential
-    return await FirebaseAuth.instance.signInWithCredential(credential);
+      // Once signed in, return the UserCredential
+      return await Api.auth.signInWithCredential(credential);
+    } catch (e) {
+      // print('\nsignInWithGoogle: $e');
+      Dialogs.showSnackbar(context, "Something went wrong !!! (No internet)");
+      return null;
+    }
   }
 
   _googleButton() {
+    //for showing progress bar
+    Dialogs.showProgressbar(context);
     signInWithGoogle().then((user) {
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (_) => HomeScreen()));
+      //for hiding progress bar
+      Navigator.pop(context);
+      if (user != null) {
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (_) => HomeScreen()));
+      }
     });
   }
 
