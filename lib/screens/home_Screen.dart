@@ -1,6 +1,7 @@
 import 'package:cat_app/api/Apis.dart';
 import 'package:cat_app/main.dart';
 import 'package:cat_app/models/chat_user.dart';
+import 'package:cat_app/screens/profile_Screen.dart';
 import 'package:cat_app/widget/chat_user_card.dart';
 
 import 'package:flutter/cupertino.dart';
@@ -34,7 +35,16 @@ class _HomeScreenState extends State<HomeScreen> {
               icon: const Icon(Icons.search, color: Colors.black)),
           //for profile section
           IconButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => ProfileScreen(
+                      user: list[0],
+                    ),
+                  ),
+                );
+              },
               icon: const Icon(Icons.menu, color: Colors.black)),
         ],
       ),

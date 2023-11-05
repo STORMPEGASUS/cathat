@@ -19,6 +19,7 @@ class LoginScreeen extends StatefulWidget {
 
 // login screen
 class _LoginScreeenState extends State<LoginScreeen> {
+  //login with google
   Future<UserCredential?> signInWithGoogle() async {
     try {
       //using try catch for internet issue detection
@@ -48,12 +49,22 @@ class _LoginScreeenState extends State<LoginScreeen> {
   _googleButton() {
     //for showing progress bar
     Dialogs.showProgressbar(context);
-    signInWithGoogle().then((user) {
+    signInWithGoogle().then((user) async {
       //for hiding progress bar
       Navigator.pop(context);
+      
+      
       if (user != null) {
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (_) => HomeScreen()));
+        if (await Api.userExist()) {//if user exist then no need to add him
+          // ignore: use_build_context_synchronously
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (_) => HomeScreen()));
+        } else {//new user add to the database
+          Api.createUser().then((value) {
+            Navigator.pushReplacement(
+                context, MaterialPageRoute(builder: (_) => HomeScreen()));
+          });
+        }
       }
     });
   }

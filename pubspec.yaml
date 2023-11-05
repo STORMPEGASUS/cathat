@@ -45,6 +45,10 @@ dependencies:
   firebase_auth: ^4.12.1
   #for accessing cloud firestore database
   cloud_firestore: ^4.12.2
+  #for showing network image
+  cached_network_image: ^3.3.0
+  #for path
+  path_provider: ^2.1.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
