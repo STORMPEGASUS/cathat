@@ -6,7 +6,6 @@ import 'package:cat_app/widget/chat_user_card.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -20,19 +19,18 @@ class _HomeScreenState extends State<HomeScreen> {
   List<ChatUser> list = [];
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Api.getSelfInfo();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: const Icon(
-          CupertinoIcons.home,
-          color: Colors.black,
-        ),
-        title: const Text('DEMO CHAT'),
+        title: const Text('CAT CHAT'),
         actions: [
-          //for search user
-          IconButton(
-              onPressed: () {},
-              icon: const Icon(Icons.search, color: Colors.black)),
           //for profile section
           IconButton(
               onPressed: () {
@@ -40,7 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   context,
                   MaterialPageRoute(
                     builder: (_) => ProfileScreen(
-                      user: list[0],
+                      user: Api.me,
                     ),
                   ),
                 );
@@ -48,19 +46,19 @@ class _HomeScreenState extends State<HomeScreen> {
               icon: const Icon(Icons.menu, color: Colors.black)),
         ],
       ),
-      //for adding new chat user
-      floatingActionButton: Padding(
-          padding: const EdgeInsets.only(bottom: 10),
-          child: FloatingActionButton(
-              onPressed: () async {
-                await Api.auth.signOut();
-                await GoogleSignIn().signOut();
-              },
-              child:
-                  const Icon(Icons.add_comment_rounded, color: Colors.black))),
+      // //for adding new chat user
+      // floatingActionButton: Padding(
+      //     padding: const EdgeInsets.only(bottom: 10),
+      //     child: FloatingActionButton(
+      //         onPressed: () async {
+      //           await Api.auth.signOut();
+      //           await GoogleSignIn().signOut();
+      //         },
+      //         child:
+      //             const Icon(Icons.add_comment_rounded, color: Colors.black))),
       body: StreamBuilder(
         //for dynamic data display
-        stream: Api.firestore.collection('users').snapshots(),
+        stream: Api.getAllUser(),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.waiting:

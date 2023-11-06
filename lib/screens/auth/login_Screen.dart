@@ -45,7 +45,7 @@ class _LoginScreeenState extends State<LoginScreeen> {
       return null;
     }
   }
-
+  //button to implement login
   _googleButton() {
     //for showing progress bar
     Dialogs.showProgressbar(context);
